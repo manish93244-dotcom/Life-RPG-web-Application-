@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #0a0a12;
+    color: #e2e8f0;
+    font-family: 'JetBrains Mono', monospace, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Orbitron', 'Chakra Petch', sans-serif;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* Custom Cyberpunk Utilities */
+.font-terminal {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-cyber {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.font-chakra {
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Glowing Border and Shadow Effects */
+.glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.25), inset 0 0 10px rgba(0, 242, 254, 0.05);
+}
+
+.glow-cyan-strong {
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.5), inset 0 0 15px rgba(0, 242, 254, 0.15);
+}
+
+.glow-magenta {
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.3), inset 0 0 10px rgba(255, 0, 127, 0.05);
+}
+
+.glow-magenta-strong {
+  box-shadow: 0 0 25px rgba(255, 0, 127, 0.5), inset 0 0 15px rgba(255, 0, 127, 0.15);
+}
+
+.glow-amber {
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.3), inset 0 0 10px rgba(245, 158, 11, 0.05);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+}
+
+.text-glow-magenta {
+  text-shadow: 0 0 8px rgba(255, 0, 127, 0.7);
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+/* Scanlines and Grid Background */
+.cyber-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0, 242, 254, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.scanlines {
+  background: linear-gradient(
+    rgba(18, 19, 30, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+}
+
+/* Screen Shake Effect for Boss Quests / Level Up */
+@keyframes screen-shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-4px, 3px) rotate(-0.5deg); }
+  30% { transform: translate(4px, -3px) rotate(0.5deg); }
+  45% { transform: translate(-3px, -2px) rotate(-0.2deg); }
+  60% { transform: translate(3px, 2px) rotate(0.2deg); }
+  75% { transform: translate(-2px, 1px) rotate(0deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.screen-shake-anim {
+  animation: screen-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Cyber Terminal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d0e17;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e2238;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00f2fe;
+}

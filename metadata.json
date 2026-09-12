@@ -1,0 +1,6 @@
+{
+  "name": "Life RPG",
+  "description": "Cyberpunk Hacker Terminal Life RPG with Quests, Attributes Progression, and Cyber Armory.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

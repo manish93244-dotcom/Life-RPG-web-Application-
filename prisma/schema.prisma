@@ -1,0 +1,132 @@
+// Prisma Schema for Life RPG Web Application
+// Compatible with PostgreSQL (recommended for production) and SQLite
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum AttributeType {
+  INTELLECT
+  STRENGTH
+  VITALITY
+  DISCIPLINE
+}
+
+enum QuestDifficulty {
+  F_RANK // Easy: 15 XP, 10 Credits
+  C_RANK // Medium: 35 XP, 25 Credits
+  S_RANK // Boss/Hard: 100 XP, 75 Credits
+}
+
+enum ItemCategory {
+  TITLE
+  AVATAR
+  THEME
+  CYBERWARE
+}
+
+enum ItemRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model User {
+  id             String      @id @default(uuid())
+  email          String      @unique
+  username       String      @unique
+  passwordHash   String
+  avatar         String      @default("cyber-runner")
+  title          String      @default("Novice Netrunner")
+  theme          String      @default("neon-cyan")
+  level          Int         @default(1)
+  xp             Int         @default(0)
+  credits        Int         @default(50)
+  statPoints     Int         @default(0)
+  streak         Int         @default(1)
+  lastActiveDate DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  // Relationships
+  attributes     Attribute[]
+  quests         Quest[]
+  inventory      Inventory[]
+
+  @@index([email])
+  @@index([username])
+}
+
+model Attribute {
+  id        String        @id @default(uuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      AttributeType
+  level     Int           @default(1)
+  xp        Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@unique([userId, type])
+  @@index([userId])
+}
+
+model Quest {
+  id           String          @id @default(uuid())
+  userId       String
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  description  String          @default("")
+  attribute    AttributeType   @default(INTELLECT)
+  difficulty   QuestDifficulty @default(F_RANK)
+  xpReward     Int
+  creditReward Int
+  completed    Boolean         @default(false)
+  completedAt  DateTime?
+  dueDate      DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([completed])
+  @@index([attribute])
+}
+
+model Item {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String
+  category    ItemCategory
+  rarity      ItemRarity   @default(COMMON)
+  price       Int
+  icon        String
+  value       String // Avatar ID, Title string, Theme CSS class, or stat bonus
+  statBonus   String?
+  createdAt   DateTime     @default(now())
+
+  // Relationships
+  inventories Inventory[]
+
+  @@index([category])
+  @@index([rarity])
+}
+
+model Inventory {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  equipped   Boolean  @default(false)
+  acquiredAt DateTime @default(now())
+
+  @@unique([userId, itemId])
+  @@index([userId])
+  @@index([itemId])
+}
