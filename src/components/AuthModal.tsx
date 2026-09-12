@@ -109,6 +109,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Login / Register Toggle Tabs */}
         <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-5 font-mono text-xs">
           <button
+            id="auth-tab-login"
             type="button"
             onClick={() => {
               setMode('login');
@@ -123,10 +124,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             Log In
           </button>
           <button
+            id="auth-tab-register"
             type="button"
             onClick={() => {
               setMode('register');
               setErrorMessage(null);
+              if (identifier) {
+                if (identifier.includes('@')) {
+                  if (!email) setEmail(identifier);
+                  if (!username) setUsername(identifier.split('@')[0]);
+                } else {
+                  if (!username) setUsername(identifier);
+                }
+              }
             }}
             className={`flex-1 py-1.5 rounded-lg transition-all ${
               mode === 'register'
@@ -140,9 +150,44 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Error Alert */}
         {errorMessage && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-300 text-xs font-mono flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-            <span>{errorMessage}</span>
+          <div className="mb-4 p-3 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-300 text-xs font-mono">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <span>{errorMessage.replace('OPERATIVE_NOT_FOUND: ', '')}</span>
+              </div>
+            </div>
+
+            {mode === 'login' && (errorMessage.includes('not registered') || errorMessage.includes('OPERATIVE_NOT_FOUND')) && (
+              <div className="mt-2.5 pt-2 border-t border-rose-500/30">
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={async () => {
+                    setErrorMessage(null);
+                    setIsLoading(true);
+                    try {
+                      const derivedUsername = identifier.includes('@')
+                        ? identifier.split('@')[0]
+                        : identifier;
+                      const derivedEmail = identifier.includes('@')
+                        ? identifier
+                        : `${identifier}@netrunner.grid`;
+                      await onRegister(derivedUsername, derivedEmail, password, selectedAvatar);
+                      cyberAudio.playCreditsGained();
+                    } catch (err: any) {
+                      setErrorMessage(err.message || 'Registration failed.');
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
+                  className="w-full py-1.5 px-3 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 text-[11px] font-bold text-center transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                  <span>Register &quot;{identifier}&quot; now with entered passphrase</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
